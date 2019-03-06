@@ -613,8 +613,11 @@ bool handleLedsCmd(void) {
   char *stateStr = commands.valueOf(lampParams[0]);
   bool state = ( strcmp(stateStr,ky_HIGH) == 0 );
   //
-  uint8_t level = commands.intValueOf(lampParams[1]);
-  uint8_t intensity = (uint8_t)((float)(level)/100.0)*255;
+//  uint8_t level = commands.intValueOf(lampParams[1]);
+  float level = commands.intValueOf(lampParams[1]);
+  uint8_t intensity = (uint8_t)((level/100.0)*255);
+
+//  uint8_t intensity = (uint8_t)(level * (float)2.55);
   uint32_t startT = commands.intValueOf(lampParams[2]);
   uint32_t stopT = commands.intValueOf(lampParams[3]);
   //
@@ -684,7 +687,10 @@ bool handleAirCmd(void) {
 bool handleHeatCmd(void) {
   char *stateStr = commands.valueOf(heatParams[0]);
   bool state = ( strcmp(stateStr,ky_HIGH) == 0 );
-  uint8_t intensity = commands.intValueOf(heatParams[1]);
+//  uint8_t level = commands.intValueOf(heatParams[1]);
+  float level = commands.intValueOf(heatParams[1]);
+  uint8_t intensity = (uint8_t)((level/100.0)*255);
+
   writeHeat(state,intensity);
   return(true);
 }
@@ -716,6 +722,7 @@ bool commandUpdates() {
       cmdOK = handleLedTestCmd();
     } else if ( commands.commandIS(lampCmd) ) {
       cmdOK = handleLedsCmd();
+//      cmdOK = true; 
     } else if ( commands.commandIS(pumpCmd) ) {
       cmdOK = handlePumpCmd();
     } else if ( commands.commandIS(airsCmd) ) {
@@ -772,6 +779,8 @@ void setup()
   writeAir(AirOnOffPinInit);
   writeHeat(HeatOnOffPinInit, 0);
   writeLight(LightOnOffPinInit, 0);
+//  digitalWrite(LightOnOffPin, LOW);
+//  analogWrite(LightIntensityPin, 100);
   //
 
 }
